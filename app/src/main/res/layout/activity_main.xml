@@ -7,16 +7,22 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:id="@+id/bg"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="8"
-            android:contentDescription="background"
-           android:background="@drawable/background" />
+            android:background="@drawable/background"
+            android:contentDescription="background" />
 
         <ImageView
             android:id="@+id/logo"
@@ -24,6 +30,7 @@
             android:layout_height="0dp"
             android:layout_weight="1.5"
             app:srcCompat="@drawable/logo" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,16 +45,53 @@
                 android:text="BCIcare"
                 android:textColor="@color/black"
                 android:textSize="36sp" />
+
             <TextView
 
                 android:layout_width="match_parent"
                 android:layout_height="22dp"
-                android:textColor="@color/black"
                 android:gravity="center"
                 android:text="开启您的智联脑电医疗服务之旅"
-                />
+                android:textColor="@color/black" />
         </LinearLayout>
+
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/logo2"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
+        android:contentDescription="logo2"
+        android:src="@drawable/logo2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BrainManager"
+        android:textColor="@color/black"
+        android:textSize="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo2" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/bg_rounded"
+        android:gravity="center"
+        android:text="开始"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
