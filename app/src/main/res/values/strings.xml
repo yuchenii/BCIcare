@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">BCIcare</string>
+    <!--  start_base  -->
+    <string name="label_bcicare">BCIcare</string>
+    <string name="label_starting">开启您的智联脑电医疗服务之旅</string>
+    <string name="desc_bg">background</string>
+    <string name="desc_logo1">logo1</string>
+
+    <!--    activity_start-->
+    <string name="btn_toStart">开始</string>
+    <string name="desc_logo2">logo2</string>
+    <string name="label_brain">BrainManager</string>
+
+
 </resources>
