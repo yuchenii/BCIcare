@@ -2,6 +2,7 @@ package com.example.bcicare;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // 绑定控件
-        bindview();
+        bindView();
         // 初始化数据
         initData();
         // 事件监听
@@ -39,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * 绑定控件
      */
-    private void bindview() {
+    private void bindView() {
         et_username = findViewById(R.id.et_username);
         et_password = findViewById(R.id.et_password);
         cb_remember_pd = findViewById(R.id.cb_remember_pd);
@@ -110,8 +111,15 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d(TAG, "记住密码" + SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getBoolean("is_remember"));
                     Log.d(TAG, "保存的用户名" + SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getString("username"));
                     Log.d(TAG, "保存的密码" + SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getString("password"));
-                } else {
+                    // 跳转到主界面
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    LoginActivity.this.finish();
+                } else if(!isEmpty) {
                     Toast.makeText(LoginActivity.this, "账号或密码错误", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "用户名" + et_username.getText().toString());
+                    Log.d(TAG, "密码" + et_password.getText().toString());
+
                 }
             }
         });
