@@ -72,7 +72,8 @@ public class LoginActivity extends AppCompatActivity {
         tv_forgot_pd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "点击了忘记密码");
+                // Log.d(TAG, "点击了忘记密码");
+                Toast.makeText(LoginActivity.this, "点击了忘记密码", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -88,7 +89,8 @@ public class LoginActivity extends AppCompatActivity {
         tv_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "点击了注册");
+                // Log.d(TAG, "点击了注册");
+                Toast.makeText(LoginActivity.this, "点击了注册", Toast.LENGTH_SHORT).show();
             }
         });
     }

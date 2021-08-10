@@ -35,5 +35,8 @@
     <string name="label_feeling">心情</string>
     <string name="label_fatigue">疲劳</string>
     <string name="btn_contact">联系主治医师</string>
+    <string name="btn_explain">数值说明</string>
+    <string name="label_fatigue_title">12h疲劳检测曲线</string>
+    <string name="label_feeling_title">8h情感检测曲线</string>
 
 </resources>
