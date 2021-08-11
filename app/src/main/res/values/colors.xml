@@ -8,6 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!--icon颜色-->
+    <color name="text_status">#8FCD4E</color>
+    <color name="text_feeling">#6DBEF8</color>
+    <color name="text_fatigue">#332A7C</color>
+
 
     <color name="black_60">#9a000000</color>
     <color name="app_gold">#FF7A59</color>

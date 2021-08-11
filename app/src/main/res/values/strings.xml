@@ -20,5 +20,28 @@
     <string name="btn_login">登录</string>
     <string name="btn_register">注册</string>
 
+    <!--icons-->
+    <string name="icon_open_arm_line" translatable="false">&#xeca2;</string>
+    <string name="icon_skull_2_line" translatable="false">&#xf795;</string>
+    <string name="icon_tong_ji" translatable="false">&#xe791;</string>
+    <string name="icon_paper_plane_l" translatable="false">&#xe645;</string>
+    <string name="icon_md_poll" translatable="false">&#xe626;</string>
+
+    <!--activity_main-->
+    <string name="desc_avatars">avatars</string>
+    <string name="label_edit_info">编辑个人信息</string>
+    <string name="desc_qrcode">QRCode</string>
+    <string name="label_status">状态</string>
+    <string name="label_feeling">心情</string>
+    <string name="label_fatigue">疲劳</string>
+    <string name="btn_contact">联系主治医师</string>
+    <string name="btn_explain">数值说明</string>
+    <string name="label_fatigue_title">12h疲劳检测曲线</string>
+    <string name="label_feeling_title">8h情感检测曲线</string>
+
+    <!--dialog_digital_explain-->
+    <string name="label_digital_explain">数值说明</string>
+    <string name="label_digital_explain_detail">1代表抑郁\n2代表失落\n3代表平静\n4代表高兴\n5代表激动\n6代表愤怒</string>
+    <string name="label_ok">好的</string>
 
 </resources>
