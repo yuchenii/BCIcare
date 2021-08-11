@@ -1,10 +1,15 @@
 package com.example.bcicare;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -149,8 +154,37 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "联系主治医师", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, "数值说明", Toast.LENGTH_SHORT).show();
+                    digitalExplain();
                 }
 
+            }
+        });
+    }
+
+    /**
+     * 数值说明dialog
+     */
+    private void digitalExplain() {
+        View digital_explain_dialog = getLayoutInflater().inflate(R.layout.dialog_digital_explain, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(digital_explain_dialog);
+        final AlertDialog dialog = builder.show();
+        // 背景设置透明
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        // 设置宽高
+        WindowManager manager = this.getWindowManager();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        manager.getDefaultDisplay().getMetrics(outMetrics);
+        int width = outMetrics.widthPixels;
+//        int height = outMetrics.heightPixels;
+        dialog.getWindow().setLayout((int) (0.7 * width), WindowManager.LayoutParams.WRAP_CONTENT);
+
+        TextView tv_digital_explain = digital_explain_dialog.findViewById(R.id.tv_digital_explain);
+        tv_digital_explain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
     }

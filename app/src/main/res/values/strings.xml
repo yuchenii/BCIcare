@@ -39,4 +39,9 @@
     <string name="label_fatigue_title">12h疲劳检测曲线</string>
     <string name="label_feeling_title">8h情感检测曲线</string>
 
+    <!--dialog_digital_explain-->
+    <string name="label_digital_explain">数值说明</string>
+    <string name="label_digital_explain_detail">1代表抑郁\n2代表失落\n3代表平静\n4代表高兴\n5代表激动\n6代表愤怒</string>
+    <string name="label_ok">好的</string>
+
 </resources>
