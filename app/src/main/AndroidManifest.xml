@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BCIcare">
         <activity
+            android:name=".PersonalDataActivity"
+            android:exported="true" />
+        <activity
             android:name=".LoginActivity"
             android:exported="true" />
         <activity

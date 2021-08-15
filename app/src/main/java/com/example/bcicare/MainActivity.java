@@ -3,6 +3,7 @@ package com.example.bcicare;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
@@ -102,7 +103,9 @@ public class MainActivity extends AppCompatActivity {
         tv_edit_info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "编辑个人信息", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(MainActivity.this, "编辑个人信息", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, PersonalDataActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -153,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 if (btn_contact.getText().equals("联系主治医师")) {
                     Toast.makeText(MainActivity.this, "联系主治医师", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, "数值说明", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(MainActivity.this, "数值说明", Toast.LENGTH_SHORT).show();
                     digitalExplain();
                 }
 
