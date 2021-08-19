@@ -31,7 +31,58 @@ public class PersonalDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_data);
 
+        // 绑定控件
+        bindView();
+        // 初始化布局
+        initView();
+        // 初始化数据
+        initData();
+        // 事件监听
+        initEvent();
+
+    }
+
+
+
+    /**
+     * 绑定控件
+     */
+    private void bindView() {
+
+        tv_change_avatars.findViewById(R.id.tv_change_avatars);
+        tv_real_name.findViewById(R.id.tv_real_name);
+        tv_gender.findViewById(R.id.tv_gender);
+        tv_patient_type.findViewById(R.id.tv_patient_type);
+        tv_attending_doctor.findViewById(R.id.tv_attending_doctor);
+        tv_medicine_method.findViewById(R.id.tv_medicine_method);
+        tv_device_ip.findViewById(R.id.tv_device_ip);
+        tv_guardian_mode.findViewById(R.id.tv_guardian_mode);
+        tv_guardian_name.findViewById(R.id.tv_guardian_name);
+        tv_guardian_phone.findViewById(R.id.tv_guardian_phone);
+        tv_logout.findViewById(R.id.tv_logout);
+        switch_guardian_mode.findViewById(R.id.switch_guardian_mode);
+    }
+
+    /**
+     * 初始化布局
+     */
+    private void initView() {
+        // 初始化toolbar
         initToolbar();
+    }
+
+    /**
+     * 初始化数据
+     */
+    private void initData(){
+
+    }
+
+    /**
+     * 事件监听
+     */
+    private void initEvent(){
+
     }
 
     /**
