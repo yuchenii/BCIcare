@@ -4,7 +4,7 @@
     <string name="label_bcicare">BCIcare</string>
     <string name="label_starting">开启您的智联脑电医疗服务之旅</string>
     <string name="desc_bg">background</string>
-    <string name="desc_logo1">logo1</string>
+    <string name="desc_logo1">logo</string>
 
     <!--activity_start-->
     <string name="btn_toStart">开始</string>
@@ -43,5 +43,23 @@
     <string name="label_digital_explain">数值说明</string>
     <string name="label_digital_explain_detail">1代表抑郁\n2代表失落\n3代表平静\n4代表高兴\n5代表激动\n6代表愤怒</string>
     <string name="label_ok">好的</string>
+
+    <!--activity_personal_data-->
+    <string name="desc_avatars_apd">头像</string>
+    <string name="label_change_avatars">更换头像</string>
+    <string name="label_real_name">姓名</string>
+    <string name="label_gender">性别</string>
+    <string name="label_patient_type">患者类型</string>
+    <string name="label_attending_doctor">主治医师</string>
+    <string name="label_medicine_method">服药方法</string>
+    <string name="label_device_ip">设备IP</string>
+    <string name="hint_guardian_mode_on">已开启监护人模式</string>
+    <string name="hint_guardian_mode_off">已关闭监护人模式</string>
+    <string name="label_guardian_mode">监护人模式</string>
+    <string name="label_guardian_info">监护人信息</string>
+    <string name="label_guardian_name">姓名</string>
+    <string name="label_guardian_phone">手机</string>
+    <string name="btn_logout">退出登录</string>
+
 
 </resources>

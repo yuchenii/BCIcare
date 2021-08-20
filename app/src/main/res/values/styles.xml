@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item><!--边框-->
         <item name="android:windowIsFloating">true</item><!--是否浮现在activity之上-->
@@ -10,5 +11,12 @@
         <item name="android:backgroundDimAmount">0.5</item><!--透明度-->
         <!-- android:backgroundDimEnabled，设置为true时候，整个Dialog的大背景就是半透明的黑色，如果设置为false就是全透明
           android:backgroundDimAmount表示暗度，0.0f完全不暗，即背景是可见的 ，1.0f时候，背景全部变黑暗    -->
+    </style>
+
+
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@android:color/transparent</item>
+        <item name="colorControlActivated">@android:color/holo_blue_light</item>
+
     </style>
 </resources>
