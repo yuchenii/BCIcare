@@ -43,10 +43,10 @@ public class MainActivity extends AppCompatActivity {
 
         // 绑定控件
         bindView();
-        // 初始化布局
-        initView();
         // 初始化数据
         initData();
+        // 初始化布局
+        initView();
         // 事件监听
         initEvent();
 
@@ -73,6 +73,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * 初始化数据
+     */
+    private void initData() {
+
+    }
+
+    /**
      * 初始化布局
      */
     private void initView() {
@@ -83,17 +90,13 @@ public class MainActivity extends AppCompatActivity {
         gd_feeling.setStroke(1, getResources().getColor(R.color.text_feeling));
         GradientDrawable gd_fatigue = (GradientDrawable) tv_icon_fatigue.getBackground();
         gd_fatigue.setStroke(1, getResources().getColor(R.color.text_fatigue));
-    }
 
-    /**
-     * 初始化数据
-     */
-    private void initData() {
         tv_user_nickname.setText("ID：回眸一笑");
         tv_status_detail.setText("间期");
         tv_feeling_detail.setText("平静");
         tv_fatigue_detail.setText("是");
     }
+
 
     /**
      * 事件监听
