@@ -91,6 +91,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Log.d(TAG, "点击了注册");
                 Toast.makeText(LoginActivity.this, "点击了注册", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
     }
