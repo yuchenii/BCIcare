@@ -294,6 +294,8 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
+        android:minWidth="150dp"
+        android:minHeight="40dp"
         android:gravity="center"
         android:text="@string/btn_logout"
         android:textColor="#FF0000"

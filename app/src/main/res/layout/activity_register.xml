@@ -4,44 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".RegisterActivity">
 
     <!--引用背景-->
     <include
+        android:id="@+id/include"
         layout="@layout/start_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!--登录-->
+    <!--注册-->
     <TextView
-        android:id="@+id/tv_login_txt"
+        android:id="@+id/tv_register_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="40dp"
-        android:text="@string/label_login"
+        android:text="注册"
         android:textSize="48sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--用户名输入框-->
+
+    <!--邮箱输入框-->
     <EditText
-        android:id="@+id/et_username"
+        android:id="@+id/et_register_email"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginTop="10dp"
         android:autofillHints="AUTOFILL_HINT_USERNAME"
         android:background="@drawable/bg_rounded_et"
+        android:ems="10"
         android:hint="@string/hint_mail"
         android:imeOptions="actionNext"
-        android:ems="10"
         android:inputType="textEmailAddress"
         android:maxLength="30"
         android:maxLines="1"
@@ -49,11 +49,11 @@
         android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_login_txt" />
+        app:layout_constraintTop_toBottomOf="@id/tv_register_txt" />
 
     <!--密码输入框-->
     <EditText
-        android:id="@+id/et_password"
+        android:id="@+id/et_password1"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginTop="10dp"
@@ -67,55 +67,29 @@
         android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_username" />
+        app:layout_constraintTop_toBottomOf="@id/et_register_email" />
 
-    <!--记住密码选框-->
-    <CheckBox
-        android:id="@+id/cb_remember_pd"
-        android:layout_width="48dp"
-        android:layout_height="50dp"
-        app:layout_constraintStart_toStartOf="@id/et_password"
-        app:layout_constraintTop_toBottomOf="@id/et_password" />
-
-    <!--记住密码提示文字-->
-    <TextView
-        android:id="@+id/tv_remember_pd"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginStart="30dp"
-        android:gravity="center"
-        android:text="@string/label_remember_pd"
-        app:layout_constraintStart_toStartOf="@id/et_password"
-        app:layout_constraintTop_toBottomOf="@id/et_password" />
-
-    <!--忘记密码按钮-->
-    <TextView
-        android:id="@+id/tv_forgot_pd"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:text="@string/btn_forgot_pd"
-        app:layout_constraintEnd_toEndOf="@id/et_password"
-        app:layout_constraintTop_toBottomOf="@id/et_password" />
-
-    <!--登录按钮-->
-    <TextView
-        android:id="@+id/tv_login"
+    <!--密码确认框-->
+    <EditText
+        android:id="@+id/et_confirm_password"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/bg_rounded_btn"
-        android:gravity="center"
-        android:text="@string/btn_login"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_register"
+        android:layout_marginTop="10dp"
+        android:autofillHints="AUTOFILL_HINT_PASSWORD"
+        android:background="@drawable/bg_rounded_et"
+        android:hint="  确认密码"
+        android:inputType="textPassword"
+        android:maxLength="30"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColorHint="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_password1" />
 
     <!--注册按钮-->
     <TextView
-        android:id="@+id/tv_register"
+        android:id="@+id/tv_register_btn"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginBottom="40dp"
@@ -124,15 +98,42 @@
         android:text="@string/btn_register"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/gl_login"
+        app:layout_constraintBottom_toBottomOf="@+id/gl_register"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <!--已有账号-->
+    <TextView
+        android:id="@+id/tv_register1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="已有账号?"
+        app:layout_constraintEnd_toStartOf="@+id/tv_toLogin"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_register_btn" />
+
+    <!--跳转到登录界面-->
+    <TextView
+        android:id="@+id/tv_toLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="登录"
+        android:textColor="@color/purple_200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_register1"
+        app:layout_constraintTop_toTopOf="@+id/tv_register1" />
 
     <!--Guideline-->
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_login"
+        android:id="@+id/gl_register"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.75" />
 

@@ -52,10 +52,10 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * 初始化数据
      */
-    private void initData(){
-        boolean isRemember = SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getBoolean("is_remember",false);
+    private void initData() {
+        boolean isRemember = SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getBoolean("is_remember", false);
         cb_remember_pd.setChecked(isRemember);
-        if(isRemember){
+        if (isRemember) {
             String username = SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getString("username");
             String password = SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getString("password");
             et_username.setText(username);
@@ -91,6 +91,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Log.d(TAG, "点击了注册");
                 Toast.makeText(LoginActivity.this, "点击了注册", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                LoginActivity.this.finish();
             }
         });
     }
@@ -98,23 +101,23 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * 登录
      */
-    private void login(){
+    private void login() {
         // 获取用户名密码
         String username = et_username.getText().toString().trim();
         String password = et_password.getText().toString().trim();
-        boolean isEmpty = false;
+
         // 判断用户名和密码是否为空
         if (username.isEmpty()) {
             // 用户名为空
-            isEmpty = true;
             Toast.makeText(LoginActivity.this, "请输入账号！", Toast.LENGTH_SHORT).show();
+            return;
         } else if (password.isEmpty()) {
             // 密码为空
-            isEmpty = true;
             Toast.makeText(LoginActivity.this, "请输入密码！", Toast.LENGTH_SHORT).show();
+            return;
         }
         // 判断账号密码是否匹配
-        if (!isEmpty && checkPassword(username, password)) {
+        if (checkPassword(username, password)) {
             Log.d(TAG, "密码正确");
             // 记住密码
             if (cb_remember_pd.isChecked()) {
@@ -133,10 +136,10 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             LoginActivity.this.finish();
-        } else if(!isEmpty) {
+        } else {
             Toast.makeText(LoginActivity.this, "账号或密码错误", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "用户名" + et_username.getText().toString());
-            Log.d(TAG, "密码" + et_password.getText().toString());
+//            Log.d(TAG, "用户名" + et_username.getText().toString());
+//            Log.d(TAG, "密码" + et_password.getText().toString());
 
         }
     }
@@ -150,9 +153,10 @@ public class LoginActivity extends AppCompatActivity {
      * @return boolean
      */
     private boolean checkPassword(String username, String password) {
+        Log.d(TAG, "判断账号密码是否匹配:" + username);
         Log.d(TAG, "输入的用户名:" + username);
         Log.d(TAG, "输入的密码:" + password);
-        return true;
+        return false;
     }
 
 }
