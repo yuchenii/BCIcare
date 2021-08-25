@@ -289,15 +289,25 @@
     </LinearLayout>
 
     <!--图表-->
-    <TextView
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginEnd="20dp"-->
+<!--        android:layout_weight="5"-->
+<!--        android:background="@drawable/bg_rounded_stroke"-->
+<!--        android:gravity="center"-->
+<!--        android:text="图表" />-->
+    <com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartView
+        android:id="@+id/AAChartView"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_weight="5"
-        android:background="@drawable/bg_rounded_stroke"
-        android:gravity="center"
-        android:text="图表" />
+        />
+
 
     <!--按钮-->
     <!--<TextView
