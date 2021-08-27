@@ -156,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "判断账号密码是否匹配:" + username);
         Log.d(TAG, "输入的用户名:" + username);
         Log.d(TAG, "输入的密码:" + password);
-        return false;
+        return true;
     }
 
 }

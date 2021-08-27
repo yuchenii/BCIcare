@@ -16,6 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartModel;
+import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartView;
+import com.example.bcicare.AAChartCoreLib.AAChartCreator.AASeriesElement;
+import com.example.bcicare.AAChartCoreLib.AAChartEnum.AAChartType;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -34,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     TextView tv_title_txt;
     TextView tv_refresh_line;
     Button btn_contact;
+
+    AAChartView aaChartView;
+    AAChartModel aaChartModel;
 
 
     @Override
@@ -70,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         tv_title_txt = findViewById(R.id.tv_title_txt);
         tv_refresh_line = findViewById(R.id.tv_refresh_line);
         btn_contact = findViewById(R.id.btn_contact);
+
+        aaChartView = findViewById(R.id.AAChartView);
     }
 
     /**
@@ -95,6 +105,27 @@ public class MainActivity extends AppCompatActivity {
         tv_status_detail.setText("间期");
         tv_feeling_detail.setText("平静");
         tv_fatigue_detail.setText("是");
+
+
+        aaChartModel = new AAChartModel()
+                .chartType(AAChartType.Area)
+//                .title("THE HEAT OF PROGRAMMING LANGUAGE")
+                .subtitle("单位(%)")
+//                .subtitleAlign("left")
+                .backgroundColor("#6DBEF8")
+                .categories(new String[]{"10","11","12","13","14","15","16","17","18","19","20","21","22"})
+                .dataLabelsEnabled(false)
+                .yAxisGridLineWidth(1f)
+                .series(new AASeriesElement[]{
+                        new AASeriesElement()
+                                .name("疲劳检测曲线")
+                                .color("#5fb2f9")
+                                .data(new Object[]{5,10,30,35,25,25,30,38,35,45,40,55,69}),
+                });
+
+        aaChartView.aa_drawChartWithChartModel(aaChartModel);
+
+
     }
 
 
@@ -133,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 tv_fatigue_line.setBackgroundResource(R.drawable.bg_rounded_selected);
                 // 更新图表
                 // ...
+                updateChart(0);
             }
         });
 
@@ -149,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 tv_feeling_line.setBackgroundResource(R.drawable.bg_rounded_selected);
                 // 更新图表
                 // ...
+                updateChart(1);
             }
         });
 
@@ -166,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     /**
      * 数值说明dialog
@@ -193,5 +228,38 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+    }
+
+    /**
+     * 更新图表
+     * @param i 种类
+     */
+    private void updateChart(int i) {
+        if(i==0){
+            aaChartModel.subtitle("单位(%)")
+                    .chartType(AAChartType.Area)
+                    .yAxisMax(100f)
+                    .categories(new String[]{"10","11","12","13","14","15","16","17","18","19","20","21","22"})
+                    .series(new AASeriesElement[]{
+                            new AASeriesElement()
+                                    .name("疲劳检测曲线")
+                                    .color("#5fb2f9")
+                                    .data(new Object[]{5,10,30,35,25,25,30,38,35,45,40,55,69}),
+                    });
+        } else {
+            aaChartModel.subtitle("数值(1-6)")
+                    .chartType(AAChartType.Areaspline)
+                    .yAxisMax(6f)
+                    .categories(new String[]{"13时","14时","15时","16时","17时","18时","19时","20时","21时"})
+                    .series(new AASeriesElement[]{
+                            new AASeriesElement()
+                                    .name("情感检测曲线")
+                                    .color("#ffa226")
+                                    .data(new Object[]{3,3,4,3,5,6,3,6,3}),
+                    });
+
+        }
+
+        aaChartView.aa_refreshChartWithChartModel(aaChartModel);
     }
 }
