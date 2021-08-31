@@ -3,12 +3,14 @@ package com.example.bcicare;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -16,10 +18,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.paddle.lite.MobileConfig;
+import com.baidu.paddle.lite.PaddlePredictor;
+import com.baidu.paddle.lite.PowerMode;
+import com.baidu.paddle.lite.Tensor;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartModel;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartView;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AASeriesElement;
 import com.example.bcicare.AAChartCoreLib.AAChartEnum.AAChartType;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -86,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
      * 初始化数据
      */
     private void initData() {
-
+        // 模拟一波
+        getChartData();
     }
 
     /**
@@ -261,5 +274,89 @@ public class MainActivity extends AppCompatActivity {
         }
 
         aaChartView.aa_refreshChartWithChartModel(aaChartModel);
+    }
+
+
+    /**
+     * 拷贝Assets下的文件到Cache
+     * @param modelPath 路径
+     * @param context 上下文
+     * @return 路径
+     */
+    public static String copyFromAssetsToCache(String modelPath, Context context) {
+        String newPath = context.getCacheDir() + "/" + modelPath;
+        // String newPath = "/sdcard/" + modelPath;
+        File desDir = new File(newPath);
+
+        try {
+            if (!desDir.exists()) {
+                desDir.mkdir();
+            }
+            for (String fileName : context.getAssets().list(modelPath)) {
+                InputStream stream = context.getAssets().open(modelPath + "/" + fileName);
+                OutputStream output = new BufferedOutputStream(new FileOutputStream(newPath + "/" + fileName));
+
+                byte[] data = new byte[1024];
+                int count;
+
+                while ((count = stream.read(data)) != -1) {
+                    output.write(data, 0, count);
+                }
+
+                output.flush();
+                output.close();
+                stream.close();
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return desDir.getPath();
+    }
+
+    /**
+     * 获取图表所需数据
+     */
+    private void getChartData(){
+
+        Context context = this;
+        String path = copyFromAssetsToCache("models", context);
+
+        Log.d(TAG, "path: " + path);
+
+
+        // 1. 写入配置：设置MobileConfig
+        MobileConfig config = new MobileConfig();
+        config.setModelFromFile(path + "/best_model_opt.nb"); // 设置Paddle-Lite模型路径
+        config.setPowerMode(PowerMode.LITE_POWER_NO_BIND); // 设置CPU运行模式
+        config.setThreads(4); // 设置工作线程数
+
+        // 2. 创建 PaddlePredictor
+        PaddlePredictor predictor = PaddlePredictor.createPaddlePredictor(config);
+
+        // 3. 设置输入数据
+        int num = 32;
+        long[] dims = {num, 1, 16, 1280};
+        float[] inputBuffer = new float[20480 * num];
+        for (int i = 0; i < 20480 * num; ++i) {
+            inputBuffer[i] = 8.5372405e-05f;
+        }
+
+        Tensor input = predictor.getInput(0);
+        input.resize(dims);
+        input.setData(inputBuffer);
+
+
+        // 4. 执行预测
+        predictor.run();
+
+        // 5. 获取输出数据
+        Tensor result = predictor.getOutput(0);
+        float[] output = result.getFloatData();
+        System.out.println("length: " + output.length);
+        for (int i = 0; i < output.length; ++i) {
+            System.out.println(output[i]);
+        }
     }
 }
