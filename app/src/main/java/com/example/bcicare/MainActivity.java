@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -328,7 +329,8 @@ public class MainActivity extends AppCompatActivity {
 
         // 1. 写入配置：设置MobileConfig
         MobileConfig config = new MobileConfig();
-        config.setModelFromFile(path + "/best_model_opt.nb"); // 设置Paddle-Lite模型路径
+//        config.setModelFromFile(path + "/best_model_opt.nb"); // 设置Paddle-Lite模型路径
+        config.setModelFromFile(path + "/cnn_opt.nb"); // 设置Paddle-Lite模型路径
         config.setPowerMode(PowerMode.LITE_POWER_NO_BIND); // 设置CPU运行模式
         config.setThreads(4); // 设置工作线程数
 
@@ -336,10 +338,16 @@ public class MainActivity extends AppCompatActivity {
         PaddlePredictor predictor = PaddlePredictor.createPaddlePredictor(config);
 
         // 3. 设置输入数据
-        int num = 32;
-        long[] dims = {num, 1, 16, 1280};
-        float[] inputBuffer = new float[20480 * num];
-        for (int i = 0; i < 20480 * num; ++i) {
+//        int num = 32;
+//        long[] dims = {num, 1, 16, 1280};
+//        float[] inputBuffer = new float[20480 * num];
+//        for (int i = 0; i < 20480 * num; ++i) {
+//            inputBuffer[i] = 8.5372405e-05f;
+//        }
+
+        long[] dims = {10, 1, 16, 1280};
+        float[] inputBuffer = new float[20480 * 10];
+        for (int i = 0; i < 20480 * 10; ++i) {
             inputBuffer[i] = 8.5372405e-05f;
         }
 
@@ -354,6 +362,7 @@ public class MainActivity extends AppCompatActivity {
         // 5. 获取输出数据
         Tensor result = predictor.getOutput(0);
         float[] output = result.getFloatData();
+        System.out.println("shape:" + Arrays.toString(result.shape()));
         System.out.println("length: " + output.length);
         for (int i = 0; i < output.length; ++i) {
             System.out.println(output[i]);
