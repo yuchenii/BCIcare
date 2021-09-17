@@ -2,6 +2,7 @@ package com.example.bcicare;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartModel;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartView;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AASeriesElement;
 import com.example.bcicare.AAChartCoreLib.AAChartEnum.AAChartType;
+import com.example.bcicare.utils.PaddleLiteUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -100,7 +102,14 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initData() {
         // 模拟一波
-        getChartData();
+//        getChartData();
+        PaddleLiteUtil paddleLiteUtil = new PaddleLiteUtil(this, "cnn_opt.nb", new long[]{10, 1, 16, 1280});
+        float[] inputBuffer = new float[20480 * 10];
+        for (int i = 0; i < 20480 * 10; ++i) {
+            inputBuffer[i] = 8.5372405e-05f;
+        }
+        float[] result = paddleLiteUtil.getFloatResult(inputBuffer);
+        Log.d(TAG, "result" + Arrays.toString(result));
     }
 
     /**
@@ -109,11 +118,11 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         // 图标边框设置颜色
         GradientDrawable gd_status = (GradientDrawable) tv_icon_status.getBackground();
-        gd_status.setStroke(1, getResources().getColor(R.color.text_status));
+        gd_status.setStroke(1, ContextCompat.getColor(this, R.color.text_status));
         GradientDrawable gd_feeling = (GradientDrawable) tv_icon_feeling.getBackground();
-        gd_feeling.setStroke(1, getResources().getColor(R.color.text_feeling));
+        gd_feeling.setStroke(1, ContextCompat.getColor(this, R.color.text_feeling));
         GradientDrawable gd_fatigue = (GradientDrawable) tv_icon_fatigue.getBackground();
-        gd_fatigue.setStroke(1, getResources().getColor(R.color.text_fatigue));
+        gd_fatigue.setStroke(1, ContextCompat.getColor(this, R.color.text_fatigue));
 
         tv_user_nickname.setText("ID：回眸一笑");
         tv_status_detail.setText("间期");
@@ -228,11 +237,15 @@ public class MainActivity extends AppCompatActivity {
         // 背景设置透明
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         // 设置宽高
-        WindowManager manager = this.getWindowManager();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        manager.getDefaultDisplay().getMetrics(outMetrics);
-        int width = outMetrics.widthPixels;
-//        int height = outMetrics.heightPixels;
+        // getDefaultDisplay()已过时
+//        WindowManager manager = this.getWindowManager();
+//        DisplayMetrics outMetrics = new DisplayMetrics();
+//        manager.getDefaultDisplay().getMetrics(outMetrics);
+//        int width = outMetrics.widthPixels;
+////        int height = outMetrics.heightPixels;
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
         dialog.getWindow().setLayout((int) (0.7 * width), WindowManager.LayoutParams.WRAP_CONTENT);
 
         TextView tv_digital_explain = digital_explain_dialog.findViewById(R.id.tv_digital_explain);

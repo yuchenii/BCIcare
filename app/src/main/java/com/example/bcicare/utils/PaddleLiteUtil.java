@@ -18,9 +18,10 @@ import java.util.Arrays;
 
 public class PaddleLiteUtil {
     private static final String TAG = "PaddleLiteUtil";
-    private Context context;
-    private String modelName;
-    private long[] dims;
+
+    private final Context context;
+    private final String modelName;
+    private final long[] dims;
 
     public PaddleLiteUtil(Context context) {
         this.context = context;
@@ -76,7 +77,7 @@ public class PaddleLiteUtil {
     /**
      * 拷贝Assets下的文件到Cache
      *
-     * @param modelPath 路径
+     * @param modelPath 要拷贝的文件路径
      * @param context   上下文
      * @return 路径
      */
