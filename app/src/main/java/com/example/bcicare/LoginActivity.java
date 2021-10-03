@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.bcicare.utils.OkHttpUtil;
 import com.example.bcicare.utils.SharedPreferencesUtil;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,6 +35,8 @@ public class LoginActivity extends AppCompatActivity {
     TextView tv_login;
     TextView tv_register;
 
+    View preLoadMainHome=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,15 @@ public class LoginActivity extends AppCompatActivity {
         initData();
         // 事件监听
         initEvent();
+
+
+    }
+
+
+    protected  void preLoadResource() {
+        if (preLoadMainHome == null) {
+            preLoadMainHome=View.inflate(this,R.layout.activity_main,null);
+        }
     }
 
     /**
@@ -229,9 +241,7 @@ public class LoginActivity extends AppCompatActivity {
 //        });
 
 
-
-
-        return false;
+        return true;
     }
 
 }

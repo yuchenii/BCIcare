@@ -27,6 +27,7 @@ import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartModel;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartView;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AASeriesElement;
 import com.example.bcicare.AAChartCoreLib.AAChartEnum.AAChartType;
+import com.example.bcicare.utils.BrainFlowGetDataUtil;
 import com.example.bcicare.utils.PaddleLiteUtil;
 
 import java.io.BufferedOutputStream;
@@ -72,6 +73,17 @@ public class MainActivity extends AppCompatActivity {
         initView();
         // 事件监听
         initEvent();
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    BrainFlowGetDataUtil.getData(new String[]{"sdfs", "sdf"});
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
     }
 
