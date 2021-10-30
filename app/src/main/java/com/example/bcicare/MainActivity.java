@@ -1,5 +1,6 @@
 package com.example.bcicare;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -10,6 +11,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -27,7 +31,7 @@ import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartModel;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartView;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AASeriesElement;
 import com.example.bcicare.AAChartCoreLib.AAChartEnum.AAChartType;
-import com.example.bcicare.utils.BrainFlowGetDataUtil;
+import com.example.bcicare.utils.BrainFlowUtil;
 import com.example.bcicare.utils.PaddleLiteUtil;
 
 import java.io.BufferedOutputStream;
@@ -59,6 +63,15 @@ public class MainActivity extends AppCompatActivity {
     AAChartView aaChartView;
     AAChartModel aaChartModel;
 
+    HandlerThread mHandlerThread;
+    Handler brainFlowHandler;
+    Handler paddleLiteHandler;
+    Handler mHandler;
+
+    boolean isStart = false;
+
+    BrainFlowUtil brainFlowUtil;
+    PaddleLiteUtil paddleLiteUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,17 +87,121 @@ public class MainActivity extends AppCompatActivity {
         // 事件监听
         initEvent();
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    BrainFlowGetDataUtil.getData(new String[]{"sdfs", "sdf"});
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+        brainFlowUtil = new BrainFlowUtil();
 
+        // Toast.makeText(this, "Brain Flow", Toast.LENGTH_SHORT).show();
+
+        mHandlerThread = new HandlerThread("main");
+        mHandlerThread.start();
+
+
+        // 进行UI相关操作
+        mHandler = new Handler(mHandlerThread.getLooper());
+
+        brainFlowHandler = new Handler(mHandlerThread.getLooper()) {
+
+            int sumb = 0;
+
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                if (msg.what == 0 && !brainFlowUtil.isPrepare()) {
+                    brainFlowUtil.prepareSession();
+                }
+
+                if (!brainFlowUtil.isPrepare()) {
+                    return;
+                }
+
+                sumb++;
+                Log.d(TAG, "handleMessage: brainFlowHandler " + sumb + msg);
+
+                try {
+                    brainFlowUtil.startStream();
+                    Log.d(TAG, "handleMessage: Start sleeping in the main thread");
+                    Thread.sleep(5000);
+                    brainFlowUtil.stopStream();
+                    brainFlowUtil.getEEGData();
+
+                    Message message = Message.obtain();
+                    message.what = 2;
+                    message.obj = "come from brainFlowHandler";
+                    paddleLiteHandler.sendMessage(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (isStart) {
+                    brainFlowHandler.sendEmptyMessage(1);
+                }
+            }
+        };
+
+
+        paddleLiteHandler = new Handler(mHandlerThread.getLooper()) {
+            int sump = 0;
+
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                sump++;
+
+                Log.d(TAG, "handleMessage: paddleLiteHandler " + sump + msg);
+
+                // paddleLite
+                float[] inputBuffer = new float[20480 * 10];
+                for (int i = 0; i < 20480 * 10; ++i) {
+                    inputBuffer[i] = 8.5372405e-05f;
+                }
+                float[] result = paddleLiteUtil.getFloatResult(inputBuffer);
+                Log.d(TAG, "paddleLiteUtil result" + Arrays.toString(result));
+                Log.d(TAG, "handleMessage: start update UI");
+
+                // 通过主线程Handler.post方法进行在主线程的UI更新操作
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Toast.makeText(MainActivity.this, msg.toString(), Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "run: update UI " + sump);
+                    }
+                });
+            }
+        };
+
+
+        
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                isStart = true;
+                Message msg = Message.obtain();
+                msg.what = 0;
+                msg.obj = "come from new thread";
+                brainFlowHandler.sendMessage(msg);
+
+                try {
+                    Thread.sleep(40000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                isStart = false;
+            }
+        }).start();
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: MainActivity is destroy");
+        isStart = false;
+        brainFlowUtil.releaseSession();
+        // 退出消息循环
+        mHandlerThread.quit();
+        // 清空消息队列，防止handler内存泄露
+        brainFlowHandler.removeCallbacksAndMessages(null);
+        paddleLiteHandler.removeCallbacksAndMessages(null);
+        mHandler.removeCallbacksAndMessages(null);
     }
 
     /**
@@ -114,14 +231,13 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initData() {
         // 模拟一波
-//        getChartData();
-        PaddleLiteUtil paddleLiteUtil = new PaddleLiteUtil(this, "cnn_opt.nb", new long[]{10, 1, 16, 1280});
-        float[] inputBuffer = new float[20480 * 10];
-        for (int i = 0; i < 20480 * 10; ++i) {
-            inputBuffer[i] = 8.5372405e-05f;
-        }
-        float[] result = paddleLiteUtil.getFloatResult(inputBuffer);
-        Log.d(TAG, "result" + Arrays.toString(result));
+        paddleLiteUtil = new PaddleLiteUtil(this, "cnn_opt.nb", new long[]{10, 1, 16, 1280});
+//        float[] inputBuffer = new float[20480 * 10];
+//        for (int i = 0; i < 20480 * 10; ++i) {
+//            inputBuffer[i] = 8.5372405e-05f;
+//        }
+//        float[] result = paddleLiteUtil.getFloatResult(inputBuffer);
+//        Log.d(TAG, "result" + Arrays.toString(result));
     }
 
     /**
@@ -148,14 +264,14 @@ public class MainActivity extends AppCompatActivity {
                 .subtitle("单位(%)")
 //                .subtitleAlign("left")
                 .backgroundColor("#6DBEF8")
-                .categories(new String[]{"10","11","12","13","14","15","16","17","18","19","20","21","22"})
+                .categories(new String[]{"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"})
                 .dataLabelsEnabled(false)
                 .yAxisGridLineWidth(1f)
                 .series(new AASeriesElement[]{
                         new AASeriesElement()
                                 .name("疲劳检测曲线")
                                 .color("#5fb2f9")
-                                .data(new Object[]{5,10,30,35,25,25,30,38,35,45,40,55,69}),
+                                .data(new Object[]{5, 10, 30, 35, 25, 25, 30, 38, 35, 45, 40, 55, 69}),
                 });
 
         aaChartView.aa_drawChartWithChartModel(aaChartModel);
@@ -236,7 +352,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     /**
      * 数值说明dialog
      */
@@ -271,126 +386,36 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 更新图表
+     *
      * @param i 种类
      */
     private void updateChart(int i) {
-        if(i==0){
+        if (i == 0) {
             aaChartModel.subtitle("单位(%)")
                     .chartType(AAChartType.Area)
                     .yAxisMax(100f)
-                    .categories(new String[]{"10","11","12","13","14","15","16","17","18","19","20","21","22"})
+                    .categories(new String[]{"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"})
                     .series(new AASeriesElement[]{
                             new AASeriesElement()
                                     .name("疲劳检测曲线")
                                     .color("#5fb2f9")
-                                    .data(new Object[]{5,10,30,35,25,25,30,38,35,45,40,55,69}),
+                                    .data(new Object[]{5, 10, 30, 35, 25, 25, 30, 38, 35, 45, 40, 55, 69}),
                     });
         } else {
             aaChartModel.subtitle("数值(1-6)")
                     .chartType(AAChartType.Areaspline)
+                    .yAxisMin(1f)
                     .yAxisMax(6f)
-                    .categories(new String[]{"13时","14时","15时","16时","17时","18时","19时","20时","21时"})
+                    .categories(new String[]{"13时", "14时", "15时", "16时", "17时", "18时", "19时", "20时", "21时"})
                     .series(new AASeriesElement[]{
                             new AASeriesElement()
                                     .name("情感检测曲线")
                                     .color("#ffa226")
-                                    .data(new Object[]{3,3,4,3,5,6,3,6,3}),
+                                    .data(new Object[]{3, 3, 4, 3, 5, 6, 3, 6, 3}),
                     });
-
         }
 
         aaChartView.aa_refreshChartWithChartModel(aaChartModel);
     }
 
-
-    /**
-     * 拷贝Assets下的文件到Cache
-     * @param modelPath 路径
-     * @param context 上下文
-     * @return 路径
-     */
-    public static String copyFromAssetsToCache(String modelPath, Context context) {
-        String newPath = context.getCacheDir() + "/" + modelPath;
-        // String newPath = "/sdcard/" + modelPath;
-        File desDir = new File(newPath);
-
-        try {
-            if (!desDir.exists()) {
-                desDir.mkdir();
-            }
-            for (String fileName : context.getAssets().list(modelPath)) {
-                InputStream stream = context.getAssets().open(modelPath + "/" + fileName);
-                OutputStream output = new BufferedOutputStream(new FileOutputStream(newPath + "/" + fileName));
-
-                byte[] data = new byte[1024];
-                int count;
-
-                while ((count = stream.read(data)) != -1) {
-                    output.write(data, 0, count);
-                }
-
-                output.flush();
-                output.close();
-                stream.close();
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return desDir.getPath();
-    }
-
-    /**
-     * 获取图表所需数据
-     */
-    private void getChartData(){
-
-        Context context = this;
-        String path = copyFromAssetsToCache("models", context);
-
-        Log.d(TAG, "path: " + path);
-
-
-        // 1. 写入配置：设置MobileConfig
-        MobileConfig config = new MobileConfig();
-//        config.setModelFromFile(path + "/best_model_opt.nb"); // 设置Paddle-Lite模型路径
-        config.setModelFromFile(path + "/cnn_opt.nb"); // 设置Paddle-Lite模型路径
-        config.setPowerMode(PowerMode.LITE_POWER_NO_BIND); // 设置CPU运行模式
-        config.setThreads(4); // 设置工作线程数
-
-        // 2. 创建 PaddlePredictor
-        PaddlePredictor predictor = PaddlePredictor.createPaddlePredictor(config);
-
-        // 3. 设置输入数据
-//        int num = 32;
-//        long[] dims = {num, 1, 16, 1280};
-//        float[] inputBuffer = new float[20480 * num];
-//        for (int i = 0; i < 20480 * num; ++i) {
-//            inputBuffer[i] = 8.5372405e-05f;
-//        }
-
-        long[] dims = {10, 1, 16, 1280};
-        float[] inputBuffer = new float[20480 * 10];
-        for (int i = 0; i < 20480 * 10; ++i) {
-            inputBuffer[i] = 8.5372405e-05f;
-        }
-
-        Tensor input = predictor.getInput(0);
-        input.resize(dims);
-        input.setData(inputBuffer);
-
-
-        // 4. 执行预测
-        predictor.run();
-
-        // 5. 获取输出数据
-        Tensor result = predictor.getOutput(0);
-        float[] output = result.getFloatData();
-        System.out.println("shape:" + Arrays.toString(result.shape()));
-        System.out.println("length: " + output.length);
-        for (int i = 0; i < output.length; ++i) {
-            System.out.println(output[i]);
-        }
-    }
 }
