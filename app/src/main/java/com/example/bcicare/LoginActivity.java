@@ -188,59 +188,6 @@ public class LoginActivity extends AppCompatActivity {
         String str = okHttpUtil.doGetSync("https://v1.hitokoto.cn", params);
         Log.d(TAG, "checkPassword: " + str);
 
-
-//        try {
-//            String str = okHttpUtil.doGetAsync("https://v1.hitokoto.cn", null);
-//            Log.d(TAG, "checkPassword: " + str);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-
-//        StringBuffer buffer = new StringBuffer();
-//        okHttpUtil.doGetAsyncCallback("https://v1.hitokoto.cn",params, new Callback(){
-//          @Override
-//          public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-//              String str = response.body().string();
-//              Log.d(TAG, "onResponse: " + str);
-//              buffer.append(str);
-////              Log.d(TAG, "onResponse: " + ChangeVale(ss, str));
-//
-//          }
-//          @Override
-//          public void onFailure(@NonNull Call call, @NonNull IOException e) {
-//              e.printStackTrace();
-//          }
-//      });
-////        try {
-////            Thread.currentThread().sleep(5000);
-////        }catch (Exception e){
-////            e.printStackTrace();
-////        }
-//        Log.d(TAG, "checkPassword: buffer" + buffer.toString());
-
-
-
-//        Map<String, String> params = new HashMap<String, String>();
-//        params.put("id", "15");
-//        params.put("name","adddf");
-//        params.put("password", "ddg123");
-//        params.put("is_health", "1");
-//
-//        okHttpUtil.doPostAsyncCallback("http://api.yuchen.tech/insert/", params, new Callback() {
-//            @Override
-//            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-//                Log.e(TAG, "onFailure: " + "失败");
-//            }
-//
-//            @Override
-//            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-//                Log.d(TAG, "onResponse: 成功");
-//                Log.d(TAG, "onResponse: " + response.toString());
-//            }
-//        });
-
-
         return true;
     }
 
