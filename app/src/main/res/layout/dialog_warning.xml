@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="@dimen/material_emphasis_medium"
+    android:background="@drawable/bg_digital_explain"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:fontFamily="@font/iconfont"
+        android:gravity="center"
+        android:text="@string/icon_danger"
+        android:textColor="@color/app_red"
+        android:textSize="50sp" />
+
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="癫痫将在一小时后发作\n请联系监护人并尽快就医" />
+
+
+    <TextView
+        android:id="@+id/tv_warning_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:minWidth="150dp"
+        android:text="我已知晓"
+        android:textColor="#0076FF"
+        android:textSize="17sp" />
+
+</LinearLayout>

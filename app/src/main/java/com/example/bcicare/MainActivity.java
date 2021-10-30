@@ -11,11 +11,13 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -87,106 +89,112 @@ public class MainActivity extends AppCompatActivity {
         // 事件监听
         initEvent();
 
-        brainFlowUtil = new BrainFlowUtil();
+//        brainFlowUtil = new BrainFlowUtil();
+//
+//        // Toast.makeText(this, "Brain Flow", Toast.LENGTH_SHORT).show();
+//
+//        mHandlerThread = new HandlerThread("main");
+//        mHandlerThread.start();
+//
+//
+//        // 进行UI相关操作
+//        mHandler = new Handler(mHandlerThread.getLooper());
+//
+//        brainFlowHandler = new Handler(mHandlerThread.getLooper()) {
+//
+//            int sumb = 0;
+//
+//            @Override
+//            public void handleMessage(@NonNull Message msg) {
+//                if (msg.what == 0 && !brainFlowUtil.isPrepare()) {
+//                    brainFlowUtil.prepareSession();
+//                }
+//
+//                if (!brainFlowUtil.isPrepare()) {
+//                    return;
+//                }
+//
+//                sumb++;
+//                Log.d(TAG, "handleMessage: brainFlowHandler " + sumb + msg);
+//
+//                try {
+//                    brainFlowUtil.startStream();
+//                    Log.d(TAG, "handleMessage: Start sleeping in the main thread");
+//                    Thread.sleep(5000);
+//                    brainFlowUtil.stopStream();
+//                    brainFlowUtil.getEEGData();
+//
+//                    Message message = Message.obtain();
+//                    message.what = 2;
+//                    message.obj = "come from brainFlowHandler";
+//                    paddleLiteHandler.sendMessage(message);
+//                } catch (Exception e) {
+//                    isStart = false;
+//                    e.printStackTrace();
+//                }
+//
+//                if (isStart) {
+//                    brainFlowHandler.sendEmptyMessage(1);
+//                }
+//            }
+//        };
+//
+//
+//        paddleLiteHandler = new Handler(mHandlerThread.getLooper()) {
+//            int sump = 0;
+//
+//            @Override
+//            public void handleMessage(@NonNull Message msg) {
+//                sump++;
+//
+//                Log.d(TAG, "handleMessage: paddleLiteHandler " + sump + msg);
+//
+//                // paddleLite
+//                float[] inputBuffer = new float[20480 * 10];
+//                for (int i = 0; i < 20480 * 10; ++i) {
+//                    inputBuffer[i] = 8.5372405e-05f;
+//                }
+//                float[] result = paddleLiteUtil.getFloatResult(inputBuffer);
+//                Log.d(TAG, "paddleLiteUtil result" + Arrays.toString(result));
+//                Log.d(TAG, "handleMessage: start update UI");
+//
+//                // 通过主线程Handler.post方法进行在主线程的UI更新操作
+//                mHandler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        // Toast.makeText(MainActivity.this, msg.toString(), Toast.LENGTH_SHORT).show();
+//                        Log.d(TAG, "run: update UI " + sump);
+//                    }
+//                });
+//            }
+//        };
+//
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                isStart = true;
+//                Message msg = Message.obtain();
+//                msg.what = 0;
+//                msg.obj = "come from new thread";
+//                brainFlowHandler.sendMessage(msg);
+//
+//                try {
+//                    Thread.sleep(40000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                isStart = false;
+//            }
+//        }).start();
 
-        // Toast.makeText(this, "Brain Flow", Toast.LENGTH_SHORT).show();
 
-        mHandlerThread = new HandlerThread("main");
-        mHandlerThread.start();
+    }
 
-
-        // 进行UI相关操作
-        mHandler = new Handler(mHandlerThread.getLooper());
-
-        brainFlowHandler = new Handler(mHandlerThread.getLooper()) {
-
-            int sumb = 0;
-
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                if (msg.what == 0 && !brainFlowUtil.isPrepare()) {
-                    brainFlowUtil.prepareSession();
-                }
-
-                if (!brainFlowUtil.isPrepare()) {
-                    return;
-                }
-
-                sumb++;
-                Log.d(TAG, "handleMessage: brainFlowHandler " + sumb + msg);
-
-                try {
-                    brainFlowUtil.startStream();
-                    Log.d(TAG, "handleMessage: Start sleeping in the main thread");
-                    Thread.sleep(5000);
-                    brainFlowUtil.stopStream();
-                    brainFlowUtil.getEEGData();
-
-                    Message message = Message.obtain();
-                    message.what = 2;
-                    message.obj = "come from brainFlowHandler";
-                    paddleLiteHandler.sendMessage(message);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (isStart) {
-                    brainFlowHandler.sendEmptyMessage(1);
-                }
-            }
-        };
-
-
-        paddleLiteHandler = new Handler(mHandlerThread.getLooper()) {
-            int sump = 0;
-
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                sump++;
-
-                Log.d(TAG, "handleMessage: paddleLiteHandler " + sump + msg);
-
-                // paddleLite
-                float[] inputBuffer = new float[20480 * 10];
-                for (int i = 0; i < 20480 * 10; ++i) {
-                    inputBuffer[i] = 8.5372405e-05f;
-                }
-                float[] result = paddleLiteUtil.getFloatResult(inputBuffer);
-                Log.d(TAG, "paddleLiteUtil result" + Arrays.toString(result));
-                Log.d(TAG, "handleMessage: start update UI");
-
-                // 通过主线程Handler.post方法进行在主线程的UI更新操作
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Toast.makeText(MainActivity.this, msg.toString(), Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "run: update UI " + sump);
-                    }
-                });
-            }
-        };
-
-
-        
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                isStart = true;
-                Message msg = Message.obtain();
-                msg.what = 0;
-                msg.obj = "come from new thread";
-                brainFlowHandler.sendMessage(msg);
-
-                try {
-                    Thread.sleep(40000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                isStart = false;
-            }
-        }).start();
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: MainActivity is stop");
 
     }
 
@@ -195,13 +203,17 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "onDestroy: MainActivity is destroy");
         isStart = false;
-        brainFlowUtil.releaseSession();
-        // 退出消息循环
-        mHandlerThread.quit();
-        // 清空消息队列，防止handler内存泄露
-        brainFlowHandler.removeCallbacksAndMessages(null);
-        paddleLiteHandler.removeCallbacksAndMessages(null);
-        mHandler.removeCallbacksAndMessages(null);
+        try {
+            brainFlowUtil.releaseSession();
+            // 退出消息循环
+            mHandlerThread.quit();
+            // 清空消息队列，防止handler内存泄露
+            brainFlowHandler.removeCallbacksAndMessages(null);
+            paddleLiteHandler.removeCallbacksAndMessages(null);
+            mHandler.removeCallbacksAndMessages(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -224,6 +236,20 @@ public class MainActivity extends AppCompatActivity {
         btn_contact = findViewById(R.id.btn_contact);
 
         aaChartView = findViewById(R.id.AAChartView);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            showWarning();
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            showWarning();
+            return true;
+        } else {
+            return super.onKeyUp(keyCode, event);
+        }
+
     }
 
     /**
@@ -377,6 +403,53 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tv_digital_explain = digital_explain_dialog.findViewById(R.id.tv_digital_explain);
         tv_digital_explain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+
+    private void showWarning() {
+        View digital_warning = getLayoutInflater().inflate(R.layout.dialog_warning, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(digital_warning);
+        // 点击空白处不消失
+        builder.setCancelable(false);
+        final AlertDialog dialog = builder.show();
+        // 背景设置透明
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        // 设置宽高
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        dialog.getWindow().setLayout((int) (0.7 * width), WindowManager.LayoutParams.WRAP_CONTENT);
+
+        TextView tv_warning_ok = digital_warning.findViewById(R.id.tv_warning_ok);
+        tv_warning_ok.setEnabled(false);
+        tv_warning_ok.setTextColor(ContextCompat.getColor(this, R.color.grey));
+        CountDownTimer timer = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long remainingTime = millisUntilFinished / 1000;
+                if (remainingTime != 0) {
+                    Log.d(TAG, "onTick: " + millisUntilFinished);
+                    tv_warning_ok.setText("我已知晓(" + remainingTime + ")");
+                } else {
+                    tv_warning_ok.setText("我已知晓");
+                    tv_warning_ok.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.app_blue));
+                    tv_warning_ok.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                // tv_warning_ok.setEnabled(true);
+            }
+        };
+        timer.start();
+        tv_warning_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
