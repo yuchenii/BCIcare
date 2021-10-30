@@ -179,14 +179,14 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "输入的密码:" + password);
 
 
-        OkHttpUtil okHttpUtil = new OkHttpUtil();
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("c","d");
-        params.put("charset","json");
-
-        String str = okHttpUtil.doGetSync("https://v1.hitokoto.cn", params);
-        Log.d(TAG, "checkPassword: " + str);
+//        OkHttpUtil okHttpUtil = new OkHttpUtil();
+//
+//        Map<String, String> params = new HashMap<String, String>();
+//        params.put("c","d");
+//        params.put("charset","json");
+//
+//        String str = okHttpUtil.doGetSync("https://v1.hitokoto.cn", params);
+//        Log.d(TAG, "checkPassword: " + str);
 
         return true;
     }
