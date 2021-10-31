@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.bcicare.utils.OkHttpUtil;
 import com.example.bcicare.utils.SharedPreferencesUtil;
 import com.google.gson.Gson;
+import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,6 +42,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        QMUIStatusBarHelper.translucent(this);
+        QMUIStatusBarHelper.setStatusBarLightMode(this);
 
         // 绑定控件
         bindView();
