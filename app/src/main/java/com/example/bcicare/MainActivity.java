@@ -324,7 +324,9 @@ public class MainActivity extends AppCompatActivity {
         iv_qr_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "预约码", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(MainActivity.this, "预约码", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, ReservationCodeActivity.class);
+                startActivity(intent);
             }
         });
 
