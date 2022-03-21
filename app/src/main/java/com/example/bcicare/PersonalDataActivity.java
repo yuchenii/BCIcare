@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
 
+/**
+ * @author yuchen
+ */
 public class PersonalDataActivity extends AppCompatActivity {
 
     private static final String TAG = "PersonalDataActivity";
@@ -122,9 +125,9 @@ public class PersonalDataActivity extends AppCompatActivity {
         switch_guardian_mode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(switch_guardian_mode.isChecked()){
+                if (switch_guardian_mode.isChecked()) {
                     tv_guardian_mode.setText(R.string.hint_guardian_mode_on);
-                }else{
+                } else {
                     tv_guardian_mode.setText(R.string.hint_guardian_mode_off);
                 }
             }
@@ -156,8 +159,10 @@ public class PersonalDataActivity extends AppCompatActivity {
         // 设置title
         // getSupportActionBar().setTitle(title);
         TextView textView = findViewById(R.id.tv_toolbar_title);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);// 添加默认的返回图标
-        getSupportActionBar().setHomeButtonEnabled(true); // 设置返回键可用
+        // 添加默认的返回图标
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // 设置返回键可用
+        getSupportActionBar().setHomeButtonEnabled(true);
         textView.setText(title);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

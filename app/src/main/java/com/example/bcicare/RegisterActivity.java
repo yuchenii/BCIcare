@@ -12,6 +12,9 @@ import android.widget.Toast;
 
 import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
 
+/**
+ * @author yuchen
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterActivity";

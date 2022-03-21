@@ -25,23 +25,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.paddle.lite.MobileConfig;
-import com.baidu.paddle.lite.PaddlePredictor;
-import com.baidu.paddle.lite.PowerMode;
-import com.baidu.paddle.lite.Tensor;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartModel;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartView;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AASeriesElement;
 import com.example.bcicare.AAChartCoreLib.AAChartEnum.AAChartType;
-import com.example.bcicare.utils.BrainFlowUtil;
-import com.example.bcicare.utils.PaddleLiteUtil;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,15 +53,6 @@ public class MainActivity extends AppCompatActivity {
     AAChartView aaChartView;
     AAChartModel aaChartModel;
 
-    HandlerThread mHandlerThread;
-    Handler brainFlowHandler;
-    Handler paddleLiteHandler;
-    Handler mHandler;
-
-    boolean isStart = false;
-
-    BrainFlowUtil brainFlowUtil;
-    PaddleLiteUtil paddleLiteUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,106 +68,6 @@ public class MainActivity extends AppCompatActivity {
         // 事件监听
         initEvent();
 
-//        brainFlowUtil = new BrainFlowUtil();
-//
-//        // Toast.makeText(this, "Brain Flow", Toast.LENGTH_SHORT).show();
-//
-//        mHandlerThread = new HandlerThread("main");
-//        mHandlerThread.start();
-//
-//
-//        // 进行UI相关操作
-//        mHandler = new Handler(mHandlerThread.getLooper());
-//
-//        brainFlowHandler = new Handler(mHandlerThread.getLooper()) {
-//
-//            int sumb = 0;
-//
-//            @Override
-//            public void handleMessage(@NonNull Message msg) {
-//                if (msg.what == 0 && !brainFlowUtil.isPrepare()) {
-//                    brainFlowUtil.prepareSession();
-//                }
-//
-//                if (!brainFlowUtil.isPrepare()) {
-//                    return;
-//                }
-//
-//                sumb++;
-//                Log.d(TAG, "handleMessage: brainFlowHandler " + sumb + msg);
-//
-//                try {
-//                    brainFlowUtil.startStream();
-//                    Log.d(TAG, "handleMessage: Start sleeping in the main thread");
-//                    Thread.sleep(5000);
-//                    brainFlowUtil.stopStream();
-//                    brainFlowUtil.getEEGData();
-//
-//                    Message message = Message.obtain();
-//                    message.what = 2;
-//                    message.obj = "come from brainFlowHandler";
-//                    paddleLiteHandler.sendMessage(message);
-//                } catch (Exception e) {
-//                    isStart = false;
-//                    e.printStackTrace();
-//                }
-//
-//                if (isStart) {
-//                    brainFlowHandler.sendEmptyMessage(1);
-//                }
-//            }
-//        };
-//
-//
-//        paddleLiteHandler = new Handler(mHandlerThread.getLooper()) {
-//            int sump = 0;
-//
-//            @Override
-//            public void handleMessage(@NonNull Message msg) {
-//                sump++;
-//
-//                Log.d(TAG, "handleMessage: paddleLiteHandler " + sump + msg);
-//
-//                // paddleLite
-//                float[] inputBuffer = new float[20480 * 10];
-//                for (int i = 0; i < 20480 * 10; ++i) {
-//                    inputBuffer[i] = 8.5372405e-05f;
-//                }
-//                float[] result = paddleLiteUtil.getFloatResult(inputBuffer);
-//                Log.d(TAG, "paddleLiteUtil result" + Arrays.toString(result));
-//                Log.d(TAG, "handleMessage: start update UI");
-//
-//                // 通过主线程Handler.post方法进行在主线程的UI更新操作
-//                mHandler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        // Toast.makeText(MainActivity.this, msg.toString(), Toast.LENGTH_SHORT).show();
-//                        Log.d(TAG, "run: update UI " + sump);
-//                    }
-//                });
-//            }
-//        };
-//
-//
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                isStart = true;
-//                Message msg = Message.obtain();
-//                msg.what = 0;
-//                msg.obj = "come from new thread";
-//                brainFlowHandler.sendMessage(msg);
-//
-//                try {
-//                    Thread.sleep(40000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                isStart = false;
-//            }
-//        }).start();
-
-
     }
 
     @Override
@@ -198,23 +77,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: MainActivity is destroy");
-        isStart = false;
-        try {
-            brainFlowUtil.releaseSession();
-            // 退出消息循环
-            mHandlerThread.quit();
-            // 清空消息队列，防止handler内存泄露
-            brainFlowHandler.removeCallbacksAndMessages(null);
-            paddleLiteHandler.removeCallbacksAndMessages(null);
-            mHandler.removeCallbacksAndMessages(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * 绑定控件
@@ -256,14 +118,6 @@ public class MainActivity extends AppCompatActivity {
      * 初始化数据
      */
     private void initData() {
-        // 模拟一波
-        paddleLiteUtil = new PaddleLiteUtil(this, "cnn_opt.nb", new long[]{10, 1, 16, 1280});
-//        float[] inputBuffer = new float[20480 * 10];
-//        for (int i = 0; i < 20480 * 10; ++i) {
-//            inputBuffer[i] = 8.5372405e-05f;
-//        }
-//        float[] result = paddleLiteUtil.getFloatResult(inputBuffer);
-//        Log.d(TAG, "result" + Arrays.toString(result));
     }
 
     /**
