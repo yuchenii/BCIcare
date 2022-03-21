@@ -1,14 +1,23 @@
 package com.example.bcicare;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -20,6 +29,7 @@ import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartModel;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AAChartView;
 import com.example.bcicare.AAChartCoreLib.AAChartCreator.AASeriesElement;
 import com.example.bcicare.AAChartCoreLib.AAChartEnum.AAChartType;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,6 +70,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: MainActivity is stop");
+
+    }
+
+
     /**
      * 绑定控件
      */
@@ -82,11 +100,24 @@ public class MainActivity extends AppCompatActivity {
         aaChartView = findViewById(R.id.AAChartView);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            showWarning();
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            showWarning();
+            return true;
+        } else {
+            return super.onKeyUp(keyCode, event);
+        }
+
+    }
+
     /**
      * 初始化数据
      */
     private void initData() {
-
     }
 
     /**
@@ -95,11 +126,11 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         // 图标边框设置颜色
         GradientDrawable gd_status = (GradientDrawable) tv_icon_status.getBackground();
-        gd_status.setStroke(1, getResources().getColor(R.color.text_status));
+        gd_status.setStroke(1, ContextCompat.getColor(this, R.color.text_status));
         GradientDrawable gd_feeling = (GradientDrawable) tv_icon_feeling.getBackground();
-        gd_feeling.setStroke(1, getResources().getColor(R.color.text_feeling));
+        gd_feeling.setStroke(1, ContextCompat.getColor(this, R.color.text_feeling));
         GradientDrawable gd_fatigue = (GradientDrawable) tv_icon_fatigue.getBackground();
-        gd_fatigue.setStroke(1, getResources().getColor(R.color.text_fatigue));
+        gd_fatigue.setStroke(1, ContextCompat.getColor(this, R.color.text_fatigue));
 
         tv_user_nickname.setText("ID：回眸一笑");
         tv_status_detail.setText("间期");
@@ -113,14 +144,14 @@ public class MainActivity extends AppCompatActivity {
                 .subtitle("单位(%)")
 //                .subtitleAlign("left")
                 .backgroundColor("#6DBEF8")
-                .categories(new String[]{"10","11","12","13","14","15","16","17","18","19","20","21","22"})
+                .categories(new String[]{"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"})
                 .dataLabelsEnabled(false)
                 .yAxisGridLineWidth(1f)
                 .series(new AASeriesElement[]{
                         new AASeriesElement()
                                 .name("疲劳检测曲线")
                                 .color("#5fb2f9")
-                                .data(new Object[]{5,10,30,35,25,25,30,38,35,45,40,55,69}),
+                                .data(new Object[]{5, 10, 30, 35, 25, 25, 30, 38, 35, 45, 40, 55, 69}),
                 });
 
         aaChartView.aa_drawChartWithChartModel(aaChartModel);
@@ -147,7 +178,9 @@ public class MainActivity extends AppCompatActivity {
         iv_qr_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "预约码", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(MainActivity.this, "预约码", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, ReservationCodeActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -201,7 +234,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     /**
      * 数值说明dialog
      */
@@ -214,11 +246,15 @@ public class MainActivity extends AppCompatActivity {
         // 背景设置透明
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         // 设置宽高
-        WindowManager manager = this.getWindowManager();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        manager.getDefaultDisplay().getMetrics(outMetrics);
-        int width = outMetrics.widthPixels;
-//        int height = outMetrics.heightPixels;
+        // getDefaultDisplay()已过时
+//        WindowManager manager = this.getWindowManager();
+//        DisplayMetrics outMetrics = new DisplayMetrics();
+//        manager.getDefaultDisplay().getMetrics(outMetrics);
+//        int width = outMetrics.widthPixels;
+////        int height = outMetrics.heightPixels;
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
         dialog.getWindow().setLayout((int) (0.7 * width), WindowManager.LayoutParams.WRAP_CONTENT);
 
         TextView tv_digital_explain = digital_explain_dialog.findViewById(R.id.tv_digital_explain);
@@ -230,36 +266,85 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    private void showWarning() {
+        View digital_warning = getLayoutInflater().inflate(R.layout.dialog_warning, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(digital_warning);
+        // 点击空白处不消失
+        builder.setCancelable(false);
+        final AlertDialog dialog = builder.show();
+        // 背景设置透明
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        // 设置宽高
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        dialog.getWindow().setLayout((int) (0.7 * width), WindowManager.LayoutParams.WRAP_CONTENT);
+
+        TextView tv_warning_ok = digital_warning.findViewById(R.id.tv_warning_ok);
+        tv_warning_ok.setEnabled(false);
+        tv_warning_ok.setTextColor(ContextCompat.getColor(this, R.color.grey));
+        CountDownTimer timer = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long remainingTime = millisUntilFinished / 1000;
+                if (remainingTime != 0) {
+                    Log.d(TAG, "onTick: " + millisUntilFinished);
+                    tv_warning_ok.setText("我已知晓(" + remainingTime + ")");
+                } else {
+                    tv_warning_ok.setText("我已知晓");
+                    tv_warning_ok.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.app_blue));
+                    tv_warning_ok.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                // tv_warning_ok.setEnabled(true);
+            }
+        };
+        timer.start();
+        tv_warning_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
     /**
      * 更新图表
+     *
      * @param i 种类
      */
     private void updateChart(int i) {
-        if(i==0){
+        if (i == 0) {
             aaChartModel.subtitle("单位(%)")
                     .chartType(AAChartType.Area)
                     .yAxisMax(100f)
-                    .categories(new String[]{"10","11","12","13","14","15","16","17","18","19","20","21","22"})
+                    .categories(new String[]{"10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22"})
                     .series(new AASeriesElement[]{
                             new AASeriesElement()
                                     .name("疲劳检测曲线")
                                     .color("#5fb2f9")
-                                    .data(new Object[]{5,10,30,35,25,25,30,38,35,45,40,55,69}),
+                                    .data(new Object[]{5, 10, 30, 35, 25, 25, 30, 38, 35, 45, 40, 55, 69}),
                     });
         } else {
             aaChartModel.subtitle("数值(1-6)")
                     .chartType(AAChartType.Areaspline)
+                    .yAxisMin(1f)
                     .yAxisMax(6f)
-                    .categories(new String[]{"13时","14时","15时","16时","17时","18时","19时","20时","21时"})
+                    .categories(new String[]{"13时", "14时", "15时", "16时", "17时", "18时", "19时", "20时", "21时"})
                     .series(new AASeriesElement[]{
                             new AASeriesElement()
                                     .name("情感检测曲线")
                                     .color("#ffa226")
-                                    .data(new Object[]{3,3,4,3,5,6,3,6,3}),
+                                    .data(new Object[]{3, 3, 4, 3, 5, 6, 3, 6, 3}),
                     });
-
         }
 
         aaChartView.aa_refreshChartWithChartModel(aaChartModel);
     }
+
 }

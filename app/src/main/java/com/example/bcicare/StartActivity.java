@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
+
 public class StartActivity extends AppCompatActivity {
 
     private static final String TAG = "StartActivity";
@@ -16,6 +18,9 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        QMUIStatusBarHelper.translucent(this);
+        QMUIStatusBarHelper.setStatusBarLightMode(this);
 
         tv_toStart = findViewById(R.id.tv_toStart);
         tv_toStart.setOnClickListener(new View.OnClickListener() {

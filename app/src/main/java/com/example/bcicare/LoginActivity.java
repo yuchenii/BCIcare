@@ -1,5 +1,6 @@
 package com.example.bcicare;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,7 +12,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bcicare.utils.OkHttpUtil;
 import com.example.bcicare.utils.SharedPreferencesUtil;
+import com.google.gson.Gson;
+import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,10 +36,15 @@ public class LoginActivity extends AppCompatActivity {
     TextView tv_login;
     TextView tv_register;
 
+    View preLoadMainHome=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        QMUIStatusBarHelper.translucent(this);
+        QMUIStatusBarHelper.setStatusBarLightMode(this);
 
         // 绑定控件
         bindView();
@@ -35,6 +52,15 @@ public class LoginActivity extends AppCompatActivity {
         initData();
         // 事件监听
         initEvent();
+
+
+    }
+
+
+    protected  void preLoadResource() {
+        if (preLoadMainHome == null) {
+            preLoadMainHome=View.inflate(this,R.layout.activity_main,null);
+        }
     }
 
     /**
@@ -144,7 +170,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
     /**
      * 判断账号密码是否匹配
      *
@@ -156,6 +181,17 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "判断账号密码是否匹配:" + username);
         Log.d(TAG, "输入的用户名:" + username);
         Log.d(TAG, "输入的密码:" + password);
+
+
+//        OkHttpUtil okHttpUtil = new OkHttpUtil();
+//
+//        Map<String, String> params = new HashMap<String, String>();
+//        params.put("c","d");
+//        params.put("charset","json");
+//
+//        String str = okHttpUtil.doGetSync("https://v1.hitokoto.cn", params);
+//        Log.d(TAG, "checkPassword: " + str);
+
         return true;
     }
 

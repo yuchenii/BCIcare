@@ -28,6 +28,7 @@
     <color name="app_white1">#CFCFCF</color>
     <color name="app_blue">#3a9be7</color>
 
+
     <color name="layer_grid_line">#000000</color>
 
     <color name="app_mainclolr">#FB6A8F</color>
@@ -60,8 +61,9 @@
     <color name="app_gadblue">#2196F3</color>
     <color name="app_qing">#3FCAB8</color>
 
-    <color name="app_blue1">#2ABFFD</color>
-    <color name="app_blue2">#4F8CFE</color>
+    <color name="app_blue1">#6DBEF8</color>
+    <color name="app_blue2">#2ABFFD</color>
+    <color name="app_blue3">#4F8CFE</color>
     <color name="app_pink">#FB6A8F</color>
 
     <color name="app_textview_content">#faf6f0</color>

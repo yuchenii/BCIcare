@@ -26,6 +26,7 @@
     <string name="icon_tong_ji" translatable="false">&#xe791;</string>
     <string name="icon_paper_plane_l" translatable="false">&#xe645;</string>
     <string name="icon_md_poll" translatable="false">&#xe626;</string>
+    <string name="icon_danger" translatable="false">&#xe61c;</string>
 
     <!--activity_main-->
     <string name="desc_avatars">avatars</string>
