@@ -9,11 +9,15 @@ import android.widget.TextView;
 
 import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
 
+/**
+ * @author yuchen
+ */
 public class StartActivity extends AppCompatActivity {
 
     private static final String TAG = "StartActivity";
 
     TextView tv_toStart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

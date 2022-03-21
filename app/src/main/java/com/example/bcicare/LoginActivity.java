@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -12,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bcicare.auth.LoginDTO;
+import com.example.bcicare.config.Urls;
 import com.example.bcicare.utils.OkHttpUtil;
 import com.example.bcicare.utils.SharedPreferencesUtil;
 import com.google.gson.Gson;
@@ -36,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView tv_login;
     TextView tv_register;
 
-    View preLoadMainHome=null;
+    View preLoadMainHome = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,9 @@ public class LoginActivity extends AppCompatActivity {
 
         QMUIStatusBarHelper.translucent(this);
         QMUIStatusBarHelper.setStatusBarLightMode(this);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         // 绑定控件
         bindView();
@@ -57,9 +63,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    protected  void preLoadResource() {
+    protected void preLoadResource() {
         if (preLoadMainHome == null) {
-            preLoadMainHome=View.inflate(this,R.layout.activity_main,null);
+            preLoadMainHome = View.inflate(this, R.layout.activity_main, null);
         }
     }
 
@@ -173,26 +179,34 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * 判断账号密码是否匹配
      *
-     * @param username 用户名
-     * @param password 密码
+     * @param user_email 用户名
+     * @param password   密码
      * @return boolean
      */
-    private boolean checkPassword(String username, String password) {
-        Log.d(TAG, "判断账号密码是否匹配:" + username);
-        Log.d(TAG, "输入的用户名:" + username);
+    private boolean checkPassword(String user_email, String password) {
+        Log.d(TAG, "判断账号密码是否匹配:" + user_email);
+        Log.d(TAG, "输入的用户名:" + user_email);
         Log.d(TAG, "输入的密码:" + password);
 
+        String url = Urls.BASE_URL + Urls.AUTH_LOGIN;
 
-//        OkHttpUtil okHttpUtil = new OkHttpUtil();
-//
-//        Map<String, String> params = new HashMap<String, String>();
-//        params.put("c","d");
-//        params.put("charset","json");
-//
-//        String str = okHttpUtil.doGetSync("https://v1.hitokoto.cn", params);
-//        Log.d(TAG, "checkPassword: " + str);
+        Log.d(TAG, "checkPassword: url " + url);
 
-        return true;
+        String res = OkHttpUtil.builder().url(url).addParam("user_email", user_email).addParam("password", password).addHeader("Content-Type", "application/json; charset=utf-8").post().sync();
+
+        Log.d(TAG, "checkPassword: 登录结果" + res);
+
+        Log.d(TAG, "checkPassword: 登录结果" + res.contains("access_token"));
+
+        if (res.contains("access_token")) {
+            Gson gson = new Gson();
+            LoginDTO loginDTO = gson.fromJson(res, LoginDTO.class);
+            SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA")
+                    .putString("access_token", loginDTO.getAccessToken())
+                    .putString("refresh_token", loginDTO.getRefreshToken());
+            return true;
+        }
+        return false;
     }
 
 }
