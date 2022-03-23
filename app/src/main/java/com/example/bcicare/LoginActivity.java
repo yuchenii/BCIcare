@@ -1,6 +1,5 @@
 package com.example.bcicare;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,7 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bcicare.api.PatientInfosDTO;
 import com.example.bcicare.auth.LoginDTO;
+import com.example.bcicare.auth.UserTypeDTO;
 import com.example.bcicare.config.Urls;
 import com.example.bcicare.utils.OkHttpUtil;
 import com.example.bcicare.utils.SharedPreferencesUtil;
@@ -24,10 +25,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
+/**
+ * @author yuchen
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
@@ -45,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         QMUIStatusBarHelper.translucent(this);
         QMUIStatusBarHelper.setStatusBarLightMode(this);
@@ -164,6 +166,56 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "记住密码" + SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getBoolean("is_remember"));
             Log.d(TAG, "保存的用户名" + SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getString("username"));
             Log.d(TAG, "保存的密码" + SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getString("password"));
+
+            // 获取用户类型
+            String url = Urls.USER_TYPE;
+            String accessToken = SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA").getString("access_token");
+            String res = OkHttpUtil.builder().url(url)
+                    .addHeader("Content-Type", "application/json; charset=utf-8")
+                    .addHeader("Authorization","Bearer " + accessToken)
+                    .get().async();
+
+            Log.d(TAG, "login: userType " + res);
+
+            Gson gson = new Gson();
+            UserTypeDTO userType = gson.fromJson(res, UserTypeDTO.class);
+
+            int userId = userType.getData().getUserId();
+            int userType1 = userType.getData().getUserType();
+
+            Log.d(TAG, "login: user_id " + userId);
+            Log.d(TAG, "login: user_tpe " + userType1);
+
+            SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA")
+                    .putInt("user_id", userId)
+                    .putInt("user_type", userType1);
+
+            // 获取病人的基本信息
+            if (userType1 == 0){
+                String url1 = Urls.PATIENT_INFO + "/" + userId;
+                String patientInfo = OkHttpUtil.builder().url(url1)
+                        .addHeader("Content-Type", "application/json; charset=utf-8")
+                        .addHeader("Authorization","Bearer " + accessToken)
+                        .get().async();
+
+                Log.d(TAG, "login: patientinfo " + patientInfo);
+
+                PatientInfosDTO patientInfosDTO = gson.fromJson(patientInfo, PatientInfosDTO.class);
+
+                SharedPreferencesUtil.init(LoginActivity.this, "USER_DATA")
+                        .putString("user_email", patientInfosDTO.getData().getPatientInfo().getUserEmail())
+                        .putString("patient_type", patientInfosDTO.getData().getPatientInfo().getPatientType())
+                        .putString("real_name", patientInfosDTO.getData().getPatientInfo().getRealName())
+                        .putString("phone_number", patientInfosDTO.getData().getPatientInfo().getPhoneNumber())
+                        .putInt("doctor_id", patientInfosDTO.getData().getPatientInfo().getDoctorId())
+                        .putInt("gender", patientInfosDTO.getData().getPatientInfo().getGender());
+
+
+            } else {
+                Toast.makeText(LoginActivity.this, "请使用患者账号登录", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             // 跳转到主界面
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
@@ -188,11 +240,15 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "输入的用户名:" + user_email);
         Log.d(TAG, "输入的密码:" + password);
 
-        String url = Urls.BASE_URL + Urls.AUTH_LOGIN;
+        String url = Urls.AUTH_LOGIN;
 
         Log.d(TAG, "checkPassword: url " + url);
 
-        String res = OkHttpUtil.builder().url(url).addParam("user_email", user_email).addParam("password", password).addHeader("Content-Type", "application/json; charset=utf-8").post().sync();
+        String res = OkHttpUtil.builder().url(url)
+                .addParam("user_email", user_email)
+                .addParam("password", password)
+                .addHeader("Content-Type", "application/json; charset=utf-8")
+                .post().async();
 
         Log.d(TAG, "checkPassword: 登录结果" + res);
 

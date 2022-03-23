@@ -166,6 +166,38 @@ public class OkHttpUtil {
     }
 
     /**
+     * 初始化 put 方法
+     *
+     * @return OkHttpUtil
+     */
+    public OkHttpUtil put() {
+        RequestBody requestBody;
+        String json = "";
+        if (paramMap != null) {
+            json = new Gson().toJson(paramMap);
+        }
+        requestBody = RequestBody.create(json, MediaType.parse("application/json;charset=utf-8"));
+        request = new Request.Builder().put(requestBody).url(url);
+        return this;
+    }
+
+    /**
+     * 初始化 delete 方法
+     *
+     * @return OkHttpUtil
+     */
+    public OkHttpUtil delete() {
+        RequestBody requestBody;
+        String json = "";
+        if (paramMap != null) {
+            json = new Gson().toJson(paramMap);
+        }
+        requestBody = RequestBody.create(json, MediaType.parse("application/json;charset=utf-8"));
+        request = new Request.Builder().delete(requestBody).url(url);
+        return this;
+    }
+
+    /**
      * 同步请求
      *
      * @return 请求返回的字符串
@@ -249,8 +281,6 @@ public class OkHttpUtil {
     }
 
 
-
-
     /**
      * 自定义一个接口回调
      */
@@ -267,7 +297,7 @@ public class OkHttpUtil {
         /**
          * 失败的回调函数
          *
-         * @param call call
+         * @param call     call
          * @param errorMsg 错误信息
          */
         void onFailure(Call call, String errorMsg);
