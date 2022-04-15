@@ -3,5 +3,6 @@
 <!--    <base-config cleartextTrafficPermitted="true" />-->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">api.yuchen.tech</domain>
+        <domain includeSubdomains="true">bcicare.yuchen.tech</domain>
     </domain-config>
 </network-security-config>

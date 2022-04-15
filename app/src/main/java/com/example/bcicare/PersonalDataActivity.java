@@ -15,6 +15,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bcicare.config.Urls;
+import com.example.bcicare.utils.OkHttpUtil;
+import com.example.bcicare.utils.SharedPreferencesUtil;
 import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
 
 /**
@@ -93,11 +96,14 @@ public class PersonalDataActivity extends AppCompatActivity {
         // 初始化toolbar
         initToolbar();
 
-        tv_real_name.setText("张三");
-        tv_gender.setText("男");
+//        tv_real_name.setText("张三");
+//        tv_gender.setText("男");
+        tv_real_name.setText(SharedPreferencesUtil.init(PersonalDataActivity.this, "USER_DATA").getString("real_name"));
+        tv_gender.setText(SharedPreferencesUtil.init(PersonalDataActivity.this, "USER_DATA").getInt("gender") == 0 ? "男" : "女");
         tv_patient_type.setText("癫痫");
         tv_attending_doctor.setText("钟南山");
         tv_medicine_method.setText("已置入");
+
         tv_device_ip.setText("192.168.55.1:22");
         tv_guardian_mode.setText(R.string.hint_guardian_mode_off);
         tv_guardian_name.setText("李四");
@@ -137,6 +143,23 @@ public class PersonalDataActivity extends AppCompatActivity {
         tv_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                String accessToken = SharedPreferencesUtil.init(PersonalDataActivity.this, "USER_DATA").getString("access_token");
+                String refreshToken = SharedPreferencesUtil.init(PersonalDataActivity.this, "USER_DATA").getString("refresh_token");
+
+                OkHttpUtil.builder().url(Urls.REVOKE_ACCESS)
+                        .addHeader("Content-Type", "application/json; charset=utf-8")
+                        .addHeader("Authorization","Bearer " + accessToken)
+                        .delete().async();
+
+                OkHttpUtil.builder().url(Urls.REVOKE_REFRESH)
+                        .addHeader("Content-Type", "application/json; charset=utf-8")
+                        .addHeader("Authorization","Bearer " + refreshToken)
+                        .delete().async();
+
+
+                // 返回到登录界面
                 Intent intent = new Intent(PersonalDataActivity.this, LoginActivity.class);
                 // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
